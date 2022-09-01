@@ -1,7 +1,7 @@
 var elasticsearch = require('elasticsearch');
 
 var client = new elasticsearch.Client({
-    hosts: ['http://localhost:9200']
+	hosts: ['http://localhost:9200']
 });
 
 client.ping({
@@ -22,25 +22,31 @@ let body = "";
 async function getTitle() {
 
     body = await client.updateByQuery({
-        index: 'dumydata',
+        index: 'enablements-gs1',
         refresh: true,
         body: {
             query: {
                 bool: {
                     must: [{
                         match: {
-                            "barcode": "191533368552350"
+                            "barcode": "S22PU"
                         }
                     }, {
                         match: {
-                            "tenantId": "1dd1463e-e28f-406e-b478-9ee958b4ac44"
+                            "tenantId": "fe8e1af3-3d8e-4493-95f9-d17757afe5f1"
                         }
                     }]
                 }
             }
             , script: {
-                inline: "ctx._source.project.description='new';ctx._source.metadata.product.experienceTenantId='nextcode';ctx._source.metadata.product.experienceId='experienceIdNewsss';ctx._source.metadata.product.experienceStudioId='experienceStudioIdNewssss';",
-            },
+		    lang:"painless",
+		   
+		    inline: "ctx._source.metadata.product.description='Titan Evo 2022 Ash (Small)';ctx._source.metadata.product.experiencetenantid='765';ctx._source.metadata.product.experienceid='243';ctx._source.metadata.product.experiencestudioid='bluebite:es:f601b678-31af-479c-9ce6-cfc92fdc13d0';ctx._source.metadata.product.upc='S22PU-Ash';ctx._source.metadata.barcode[0] = params.data;",
+            params:{data:{
+	    "code":"S22PU-Ash",
+	    "subtype":"UPCA",
+	    "type":"1D",
+	    "key":"BAR_CODE"}}},
         }
     })
 
